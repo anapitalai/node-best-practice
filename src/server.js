@@ -1,8 +1,19 @@
-const http = require('http');
 const app = require('./app');
+const http = require('http');
+const https = require('https');
+const {s_port,h_port}  = require('./config');
 
-const port = process.env.PORT || 3000;
+const fs = require('fs');
 
-const server = http.createServer(app);
+const options = {
+  key: fs.readFileSync('ssl/sly-key.pem'),
+  cert: fs.readFileSync('ssl/sly-cert.pem')
+};
 
-server.listen(port);
+
+http.createServer(app).listen(h_port,()=>{
+  console.log("HTTP is running on port 8080!")
+})
+https.createServer(options,app).listen(s_port,()=>{
+  console.log("HTTPS is running on port 443!")
+})
